@@ -8,6 +8,7 @@ import pygame as pg
 WIDTH = 1100  # ゲームウィンドウの幅
 HEIGHT = 650  # ゲームウィンドウの高さ
 NUM_OF_BOMBS = 5 #爆弾の数
+count = 0 #撃ち落とした爆弾の数のカウント
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -109,6 +110,24 @@ class Beam:
             self.rct.move_ip(self.vx, self.vy)
             screen.blit(self.img, self.rct)    
 
+class Score:
+    """
+    スコアに関するクラス
+    """
+    def __init__(self):
+        self.score = 0
+        self.fonto = pg.font.SysFont(None, 30)
+        self.color = (0,0,255)
+        self.img = self.fonto.render("score: 0", 0, self.color)
+        self.cx = 100
+        self.cy = HEIGHT - 50
+
+    def update(self, screen):
+        self.img = self.fonto.render(f"Score: {self.score}", 0, self.color)
+        screen.blit(self.img, (self.cx, self.cy))
+
+
+
 
 class Bomb:
     """
@@ -148,8 +167,7 @@ def main():
     bird = Bird((300, 200))
     #bomb = Bomb((255, 0, 0), 10)
     bombs = [Bomb((255,0,0),10) for _ in range(NUM_OF_BOMBS)]
-
-
+    score = Score()
 
 
     beam = None  # ゲーム初期化時にはビームは存在しない
@@ -180,9 +198,10 @@ def main():
                 if beam.rct.colliderect(bomb.rct):
                     beam = None
                     bombs[i] = None
+                    score.score += 1
                     bird.change_img(6, screen)
                     pg.display.update()
-                    time.sleep(1)
+                    #time.sleep(1)
 
         bombs = [bomb for bomb in bombs if bomb is not None]
 
@@ -192,6 +211,7 @@ def main():
             beam.update(screen)   
         for bomb in bombs:   
             bomb.update(screen)
+        score.update(screen)
         pg.display.update()
         tmr += 1
         clock.tick(50)
