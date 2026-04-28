@@ -127,8 +127,6 @@ class Score:
         screen.blit(self.img, (self.cx, self.cy)) #スコアの表示blit
 
 
-
-
 class Bomb:
     """
     爆弾に関するクラス
